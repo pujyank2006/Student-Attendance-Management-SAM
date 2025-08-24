@@ -6,23 +6,26 @@ function RefreshHandler({ setIsAuthenticated }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('token')) {
+    const token = localStorage.getItem('token');
+    const role = localStorage.getItem('role');
+
+    if (token) {
       setIsAuthenticated(true);
-      if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/signup' || location.pathname === '/home') {
-        if (localStorage.getItem('role') === 'student') {
-          navigate('/Dashboard', { replace: false });
-        }
-        else{
-          navigate('/DashboardT', { replace: false });
+
+      // redirect only if user is on login/home/root
+      if (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/home') {
+        if (role === 'student') {
+          navigate('/dashboard', { replace: true });
+        } else if (role === 'teacher') {
+          navigate('/dashboardt', { replace: true });
         }
       }
+    } else {
+      setIsAuthenticated(false);
     }
-  }, [location, navigate, setIsAuthenticated])
+  }, [location, navigate, setIsAuthenticated]);
 
-
-  return (
-    null
-  )
+  return null;
 }
 
-export default RefreshHandler
+export default RefreshHandler;
